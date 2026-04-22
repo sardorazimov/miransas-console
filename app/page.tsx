@@ -1,9 +1,11 @@
-import React from 'react'
+import { redirect } from 'next/navigation'
+import { getJwt } from '@/lib/auth'
 
-const page = () => {
-  return (
-    <div>page</div>
-  )
+export default async function RootPage() {
+  const jwt = await getJwt()
+  if (jwt) {
+    redirect('/dashboard')
+  } else {
+    redirect('/login')
+  }
 }
-
-export default page
