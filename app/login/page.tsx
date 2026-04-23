@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { Button } from '@/components/ui/button'
+import { Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
@@ -42,31 +42,48 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[oklch(0.145_0_0)]">
-      <div className="w-full max-w-sm rounded-[6px] border border-[oklch(0.22_0_0)] bg-[oklch(0.175_0_0)] p-6">
-        <div className="mb-6">
-          <h1 className="text-base font-semibold text-[oklch(0.95_0_0)]">miransas console</h1>
-          <p className="text-sm text-[oklch(0.55_0_0)] mt-1">Enter your password to continue</p>
-        </div>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              {...register('password')}
-            />
-            {errors.password && (
-              <span className="text-xs text-[oklch(0.65_0.2_25)]">{errors.password.message}</span>
-            )}
+    <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg)]">
+      <div className="w-full max-w-[340px]">
+        <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+          <div className="mb-6">
+            <h1 className="text-base font-semibold tracking-tight text-[var(--color-fg)]">
+              miransas console
+            </h1>
+            <p className="text-xs text-[var(--color-muted)] mt-1">Internal dashboard</p>
           </div>
 
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Signing in...' : 'Sign in'}
-          </Button>
-        </form>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="password" className="text-xs font-medium text-[var(--color-fg-muted)]">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                autoComplete="current-password"
+                autoFocus
+                placeholder="Enter password"
+                {...register('password')}
+              />
+              {errors.password && (
+                <span className="text-xs text-[var(--color-danger)]">{errors.password.message}</span>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="h-9 w-full rounded-md bg-[var(--color-accent)] text-[var(--color-accent-fg)] text-sm font-medium hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+            >
+              {isSubmitting && <Loader2 size={14} className="animate-spin" />}
+              {isSubmitting ? 'Signing in...' : 'Sign in'}
+            </button>
+          </form>
+        </div>
+
+        <p className="text-center text-xs text-[var(--color-muted)] mt-4">
+          Signing in will create a session for 24 hours.
+        </p>
       </div>
     </div>
   )

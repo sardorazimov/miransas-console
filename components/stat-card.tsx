@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { ArrowUpRight } from 'lucide-react'
 
 interface StatCardProps {
   label: string
@@ -9,14 +9,30 @@ interface StatCardProps {
 
 export function StatCard({ label, value, href }: StatCardProps) {
   const content = (
-    <div className="rounded-[6px] border border-[oklch(0.22_0_0)] bg-[oklch(0.175_0_0)] px-5 py-4 flex flex-col gap-1 hover:border-[oklch(0.3_0_0)] transition-colors">
-      <span className="text-xs text-[oklch(0.55_0_0)] uppercase tracking-wide">{label}</span>
-      <span className="text-2xl font-semibold tabular-nums">{value}</span>
+    <div className="group rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 flex flex-col gap-2 hover:border-[var(--color-border-hover)] transition-colors cursor-default">
+      <div className="flex items-center justify-between">
+        <span className="text-xs text-[var(--color-muted)] uppercase tracking-wider font-medium">
+          {label}
+        </span>
+        {href && (
+          <ArrowUpRight
+            size={14}
+            className="text-[var(--color-muted)] opacity-0 group-hover:opacity-100 transition-opacity"
+          />
+        )}
+      </div>
+      <span className="text-3xl font-semibold tabular-nums font-mono text-[var(--color-fg)]">
+        {value}
+      </span>
     </div>
   )
 
   if (href) {
-    return <Link href={href}>{content}</Link>
+    return (
+      <Link href={href} className="block">
+        {content}
+      </Link>
+    )
   }
   return content
 }

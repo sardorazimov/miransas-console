@@ -2,16 +2,16 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FolderOpen, Database, KeyRound, ClipboardList, LogOut } from 'lucide-react'
+import { LayoutDashboard, FolderGit2, Database, KeyRound, FileClock, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, enabled: true },
-  { label: 'Projects', href: '/projects', icon: FolderOpen, enabled: true },
+  { label: 'Projects', href: '/projects', icon: FolderGit2, enabled: true },
   { label: 'Databases', href: '/databases', icon: Database, enabled: false },
   { label: 'Secrets', href: '/secrets', icon: KeyRound, enabled: false },
-  { label: 'Audit', href: '/audit', icon: ClipboardList, enabled: false },
+  { label: 'Audit', href: '/audit', icon: FileClock, enabled: false },
 ]
 
 export function AppSidebar() {
@@ -24,11 +24,11 @@ export function AppSidebar() {
   }
 
   return (
-    <aside className="w-[220px] shrink-0 flex flex-col border-r border-[oklch(0.22_0_0)] bg-[oklch(0.145_0_0)] h-screen sticky top-0">
-      <div className="px-4 py-4 border-b border-[oklch(0.22_0_0)]">
-        <span className="text-sm font-semibold tracking-tight text-[oklch(0.95_0_0)]">
-          miransas console
-        </span>
+    <aside className="w-[220px] shrink-0 flex flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)] h-screen sticky top-0">
+      <div className="px-4 py-4 border-b border-[var(--color-border)] flex items-center gap-1.5">
+        <span className="text-sm font-semibold text-[var(--color-fg)]">miransas</span>
+        <span className="w-1 h-1 rounded-full bg-[var(--color-muted)] shrink-0" />
+        <span className="text-xs text-[var(--color-muted)]">console</span>
       </div>
 
       <nav className="flex-1 px-2 py-3 flex flex-col gap-0.5">
@@ -42,27 +42,32 @@ export function AppSidebar() {
               aria-disabled={!item.enabled}
               tabIndex={item.enabled ? undefined : -1}
               className={cn(
-                'flex items-center gap-2.5 px-3 h-8 rounded-[6px] text-sm transition-colors',
+                'flex items-center gap-2.5 px-3 h-8 rounded-md text-sm transition-colors relative',
                 isActive && item.enabled
-                  ? 'bg-[oklch(0.22_0_0)] text-[oklch(0.95_0_0)]'
+                  ? 'bg-[var(--color-surface-2)] text-[var(--color-fg)] border-l-2 border-[var(--color-accent)] -ml-0.5 pl-[11px]'
                   : item.enabled
-                  ? 'text-[oklch(0.55_0_0)] hover:bg-[oklch(0.2_0_0)] hover:text-[oklch(0.85_0_0)]'
-                  : 'text-[oklch(0.35_0_0)] cursor-not-allowed pointer-events-none'
+                  ? 'text-[var(--color-fg-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-fg)]'
+                  : 'text-[var(--color-fg-muted)] opacity-40 cursor-not-allowed pointer-events-none'
               )}
             >
-              <Icon className="h-4 w-4 shrink-0" />
-              {item.label}
+              <Icon size={16} className="shrink-0" />
+              <span className="flex-1">{item.label}</span>
+              {!item.enabled && (
+                <span className="text-[10px] font-medium px-1 py-0.5 rounded bg-[var(--color-surface-2)] text-[var(--color-muted)] border border-[var(--color-border)] leading-none">
+                  soon
+                </span>
+              )}
             </Link>
           )
         })}
       </nav>
 
-      <div className="px-2 pb-3 border-t border-[oklch(0.22_0_0)] pt-2">
+      <div className="px-2 pb-3 border-t border-[var(--color-border)] pt-2">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2.5 px-3 h-8 w-full rounded-[6px] text-sm text-[oklch(0.55_0_0)] hover:bg-[oklch(0.2_0_0)] hover:text-[oklch(0.85_0_0)] transition-colors"
+          className="flex items-center gap-2.5 px-3 h-8 w-full rounded-md text-sm text-[var(--color-fg-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-fg)] transition-colors"
         >
-          <LogOut className="h-4 w-4 shrink-0" />
+          <LogOut size={16} className="shrink-0" />
           Logout
         </button>
       </div>
