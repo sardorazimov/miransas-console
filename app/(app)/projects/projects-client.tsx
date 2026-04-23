@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Plus, FolderPlus, AlertCircle } from 'lucide-react'
+import Link from 'next/link'
 import { useProjects } from '@/hooks/use-projects'
 import { apiFetch } from '@/lib/api'
 import { queryKeys } from '@/lib/query-keys'
@@ -138,8 +139,8 @@ export function ProjectsClient({ initialData }: ProjectsClientProps) {
                 {relativeTime(project.created_at)}
               </div>
               <div className="flex justify-end">
-                <Button size="sm" variant="ghost" className="hover:bg-white/10 text-[var(--color-fg-muted)] hover:text-white transition-colors" disabled>
-                  Open
+                <Button size="sm" variant="ghost" className="hover:bg-white/10 text-[var(--color-fg-muted)] hover:text-white transition-colors" asChild>
+                  <Link href={`/projects/${project.id}`}>Open</Link>
                 </Button>
               </div>
             </div>
