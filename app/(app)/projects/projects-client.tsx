@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Plus, FolderPlus } from 'lucide-react'
+import { Plus, FolderPlus, AlertCircle } from 'lucide-react'
 import { useProjects } from '@/hooks/use-projects'
 import { apiFetch } from '@/lib/api'
 import { queryKeys } from '@/lib/query-keys'
@@ -37,7 +37,7 @@ function relativeTime(iso: string): string {
 }
 
 const newProjectSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  name: z.string().min(1, 'Project name is required'),
   description: z.string().optional(),
   repository_url: z.string().url('Must be a valid URL').optional().or(z.literal('')),
 })
@@ -71,7 +71,7 @@ export function ProjectsClient({ initialData }: ProjectsClientProps) {
         }),
       })
       await queryClient.invalidateQueries({ queryKey: queryKeys.projects })
-      toast.success('Project created')
+      toast.success('Project created successfully')
       reset()
       setOpen(false)
     } catch (err) {
@@ -85,21 +85,25 @@ export function ProjectsClient({ initialData }: ProjectsClientProps) {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between mb-2">
         <div>
-          <h1 className="text-xl font-semibold text-[var(--color-fg)]">Projects</h1>
+          <h1 className="text-xl font-semibold text-white">Projects</h1>
           <p className="text-xs text-[var(--color-muted)] mt-0.5">
             {list.length} {list.length === 1 ? 'project' : 'projects'}
           </p>
         </div>
-        <Button size="sm" variant="primary" onClick={() => setOpen(true)}>
-          <Plus size={14} />
+        <Button 
+          size="md"  
+          onClick={() => setOpen(true)} 
+          className="bg-[#8CFF2E] text-[#050505] hover:bg-[#7ce027] hover:shadow-[0_0_15px_rgba(140,255,46,0.3)] transition-all"
+        >
+          <Plus size={16} className="mr-1" />
           New project
         </Button>
       </div>
 
-      <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+      <div className="rounded-lg border border-white/10 bg-[#050505] overflow-hidden shadow-sm">
         {/* Header row */}
         <div
-          className="grid h-9 items-center border-b border-[var(--color-border)] bg-[var(--color-surface-2)] px-4 text-xs font-medium uppercase tracking-wider text-[var(--color-muted)]"
+          className="grid h-10 items-center border-b border-white/10 bg-white/[0.02] px-4 text-xs font-medium uppercase tracking-wider text-[var(--color-muted)]"
           style={{ gridTemplateColumns: '2fr 1.5fr 1fr auto' }}
         >
           <span>Name</span>
@@ -112,11 +116,11 @@ export function ProjectsClient({ initialData }: ProjectsClientProps) {
           list.map((project) => (
             <div
               key={project.id}
-              className="grid items-center px-4 border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-surface-2)]/50 transition-colors min-h-[44px] py-2"
+              className="grid items-center px-4 border-b border-white/10 last:border-0 hover:bg-white/[0.04] transition-colors min-h-[52px] py-2"
               style={{ gridTemplateColumns: '2fr 1.5fr 1fr auto' }}
             >
-              <div className="min-w-0">
-                <div className="text-sm font-medium text-[var(--color-fg)] truncate">
+              <div className="min-w-0 pr-4">
+                <div className="text-sm font-medium text-white truncate">
                   {project.name}
                 </div>
                 {project.description && (
@@ -126,80 +130,129 @@ export function ProjectsClient({ initialData }: ProjectsClientProps) {
                 )}
               </div>
               <div>
-                <span className="font-mono text-xs text-[var(--color-fg-muted)] bg-[var(--color-surface-2)] border border-[var(--color-border)] rounded px-1.5 py-0.5 inline-block">
+                <span className="font-mono text-[11px] text-[var(--color-fg-muted)] bg-white/5 border border-white/10 rounded-md px-2 py-1 inline-block">
                   {project.schema_name}
                 </span>
               </div>
               <div className="text-sm text-[var(--color-muted)] tabular-nums">
                 {relativeTime(project.created_at)}
               </div>
-              <div>
-                <Button size="sm" variant="ghost" disabled>
+              <div className="flex justify-end">
+                <Button size="sm" variant="ghost" className="hover:bg-white/10 text-[var(--color-fg-muted)] hover:text-white transition-colors" disabled>
                   Open
                 </Button>
               </div>
             </div>
           ))
         ) : (
-          <div className="flex flex-col items-center justify-center py-16 text-center px-4">
-            <FolderPlus size={48} className="text-[var(--color-muted)] mb-4 opacity-50" />
-            <p className="text-sm font-medium text-[var(--color-fg-muted)]">No projects yet</p>
-            <p className="text-xs text-[var(--color-muted)] mt-1 mb-4">
-              Create your first project to start organizing your databases
+          <div className="flex flex-col items-center justify-center py-20 text-center px-4">
+            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+              <FolderPlus size={28} className="text-[var(--color-muted)]" />
+            </div>
+            <p className="text-base font-medium text-white">No projects yet</p>
+            <p className="text-sm text-[var(--color-muted)] mt-1.5 mb-6 max-w-sm">
+              Create your first project to start organizing your databases and deployments.
             </p>
-            <Button size="sm" variant="primary" onClick={() => setOpen(true)}>
-              <Plus size={14} />
-              New project
+            <Button 
+              size="md" 
+              onClick={() => setOpen(true)}
+              className="bg-[#8CFF2E] text-[#050505] hover:bg-[#7ce027] transition-colors"
+            >
+              <Plus size={16} className="mr-1" />
+              Create Project
             </Button>
           </div>
         )}
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>New project</DialogTitle>
-            <DialogDescription>
-              Creates a new Postgres schema for this project
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-3">
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="name" className="text-xs font-medium text-[var(--color-fg-muted)]">
-                Name *
-              </Label>
-              <Input id="name" {...register('name')} placeholder="my-project" autoFocus />
-              {errors.name && (
-                <span className="text-xs text-[var(--color-danger)]">{errors.name.message}</span>
-              )}
+        <DialogContent className="sm:max-w-[425px] bg-[#050505] border border-white/10 shadow-2xl p-0 gap-0 overflow-hidden">
+          <div className="p-6 pb-4">
+            <DialogHeader>
+              <DialogTitle className="text-xl text-white">New Project</DialogTitle>
+              <DialogDescription className="text-sm text-[var(--color-muted)] mt-1.5">
+                Creates a new Postgres schema and isolated environment for your project.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="p-6 pt-2 flex flex-col space-y-5">
+              
+              {/* Name Field */}
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="name" className="text-xs font-semibold text-[var(--color-fg-muted)] uppercase tracking-wider">
+                  Project Name <span className="text-[#8CFF2E]">*</span>
+                </Label>
+                <Input 
+                  id="name" 
+                  {...register('name')} 
+                  placeholder="e.g. production-api" 
+                  autoFocus 
+                  className={`bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-[#8CFF2E] focus-visible:border-[#8CFF2E] transition-all ${errors.name ? 'border-red-500/50 focus-visible:ring-red-500' : ''}`}
+                />
+                {errors.name && (
+                  <span className="flex items-center gap-1.5 text-xs text-red-400 mt-0.5">
+                    <AlertCircle size={12} />
+                    {errors.name.message}
+                  </span>
+                )}
+              </div>
+
+              {/* Description Field */}
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="description" className="text-xs font-semibold text-[var(--color-fg-muted)] uppercase tracking-wider">
+                  Description
+                </Label>
+                <Input 
+                  id="description" 
+                  {...register('description')} 
+                  placeholder="What is this project for?" 
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-[#8CFF2E] focus-visible:border-[#8CFF2E] transition-all"
+                />
+              </div>
+
+              {/* Repo URL Field */}
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="repository_url" className="text-xs font-semibold text-[var(--color-fg-muted)] uppercase tracking-wider">
+                  Repository URL
+                </Label>
+                <Input
+                  id="repository_url"
+                  {...register('repository_url')}
+                  placeholder="https://github.com/username/repo"
+                  className={`bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-[#8CFF2E] focus-visible:border-[#8CFF2E] transition-all ${errors.repository_url ? 'border-red-500/50 focus-visible:ring-red-500' : ''}`}
+                />
+                {errors.repository_url && (
+                  <span className="flex items-center gap-1.5 text-xs text-red-400 mt-0.5">
+                    <AlertCircle size={12} />
+                    {errors.repository_url.message}
+                  </span>
+                )}
+              </div>
+
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="description" className="text-xs font-medium text-[var(--color-fg-muted)]">
-                Description
-              </Label>
-              <Input id="description" {...register('description')} placeholder="Optional description" />
+
+            {/* Footer */}
+            <div className="p-6 pt-4 bg-white/[0.02] border-t border-white/10 mt-2">
+              <DialogFooter className="gap-2 sm:gap-0">
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  onClick={() => setOpen(false)}
+                  className="text-[var(--color-muted)] hover:text-white hover:bg-white/10"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="bg-[#8CFF2E] text-[#050505] hover:bg-[#7ce027] font-medium disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px]"
+                >
+                  {isSubmitting ? 'Creating...' : 'Create Project'}
+                </Button>
+              </DialogFooter>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="repository_url" className="text-xs font-medium text-[var(--color-fg-muted)]">
-                Repository URL
-              </Label>
-              <Input
-                id="repository_url"
-                {...register('repository_url')}
-                placeholder="https://github.com/..."
-              />
-              {errors.repository_url && (
-                <span className="text-xs text-[var(--color-danger)]">{errors.repository_url.message}</span>
-              )}
-            </div>
-            <DialogFooter>
-              <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" variant="primary" disabled={isSubmitting}>
-                {isSubmitting ? 'Creating...' : 'Create'}
-              </Button>
-            </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
