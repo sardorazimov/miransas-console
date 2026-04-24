@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { useProjects } from '@/hooks/use-projects'
 import { apiFetch } from '@/lib/api'
 import { queryKeys } from '@/lib/query-keys'
+import { toSchemaName } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -58,8 +59,11 @@ export function ProjectsClient({ initialData }: ProjectsClientProps) {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<NewProjectValues>({ resolver: zodResolver(newProjectSchema) })
+
+  const nameValue = watch('name') ?? ''
 
   async function onSubmit(data: NewProjectValues) {
     try {
@@ -72,7 +76,7 @@ export function ProjectsClient({ initialData }: ProjectsClientProps) {
         }),
       })
       await queryClient.invalidateQueries({ queryKey: queryKeys.projects })
-      toast.success('Project created successfully')
+      toast.success(`Project '${data.name}' created — schema ${toSchemaName(data.name)} ready`)
       reset()
       setOpen(false)
     } catch (err) {
@@ -170,28 +174,32 @@ export function ProjectsClient({ initialData }: ProjectsClientProps) {
         <DialogContent className="sm:max-w-[425px] bg-[#050505] border border-white/10 shadow-2xl p-0 gap-0 overflow-hidden">
           <div className="p-6 pb-4">
             <DialogHeader>
-              <DialogTitle className="text-xl text-white">New Project</DialogTitle>
-              <DialogDescription className="text-sm text-[var(--color-muted)] mt-1.5">
-                Creates a new Postgres schema and isolated environment for your project.
+              <DialogTitle className="text-xl text-white">New project</DialogTitle>
+              <DialogDescription className="text-xs text-[var(--color-muted)] mt-1">
+                A project is a PostgreSQL schema where your tables, users, and data live.
+                The schema is created automatically from the name.
               </DialogDescription>
             </DialogHeader>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="p-6 pt-2 flex flex-col space-y-5">
-              
+
               {/* Name Field */}
               <div className="flex flex-col gap-2">
                 <Label htmlFor="name" className="text-xs font-semibold text-[var(--color-fg-muted)] uppercase tracking-wider">
-                  Project Name <span className="text-[#8CFF2E]">*</span>
+                  Name <span className="text-[#8CFF2E]">*</span>
                 </Label>
-                <Input 
-                  id="name" 
-                  {...register('name')} 
-                  placeholder="e.g. production-api" 
-                  autoFocus 
+                <Input
+                  id="name"
+                  {...register('name')}
+                  placeholder="binboi, auth-service, stybite..."
+                  autoFocus
                   className={`bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-[#8CFF2E] focus-visible:border-[#8CFF2E] transition-all ${errors.name ? 'border-red-500/50 focus-visible:ring-red-500' : ''}`}
                 />
+                <span className="text-xs text-[var(--color-muted)] font-mono">
+                  Schema name: {toSchemaName(nameValue)}
+                </span>
                 {errors.name && (
                   <span className="flex items-center gap-1.5 text-xs text-red-400 mt-0.5">
                     <AlertCircle size={12} />
@@ -205,25 +213,27 @@ export function ProjectsClient({ initialData }: ProjectsClientProps) {
                 <Label htmlFor="description" className="text-xs font-semibold text-[var(--color-fg-muted)] uppercase tracking-wider">
                   Description
                 </Label>
-                <Input 
-                  id="description" 
-                  {...register('description')} 
-                  placeholder="What is this project for?" 
+                <Input
+                  id="description"
+                  {...register('description')}
+                  placeholder="Internal auth service database"
                   className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-[#8CFF2E] focus-visible:border-[#8CFF2E] transition-all"
                 />
+                <span className="text-xs text-[var(--color-muted)]">Just a note for you</span>
               </div>
 
               {/* Repo URL Field */}
               <div className="flex flex-col gap-2">
                 <Label htmlFor="repository_url" className="text-xs font-semibold text-[var(--color-fg-muted)] uppercase tracking-wider">
-                  Repository URL
+                  Code repository URL
                 </Label>
                 <Input
                   id="repository_url"
                   {...register('repository_url')}
-                  placeholder="https://github.com/username/repo"
+                  placeholder="https://github.com/your-org/your-repo"
                   className={`bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-[#8CFF2E] focus-visible:border-[#8CFF2E] transition-all ${errors.repository_url ? 'border-red-500/50 focus-visible:ring-red-500' : ''}`}
                 />
+                <span className="text-xs text-[var(--color-muted)]">Optional. Link to the code that uses this database.</span>
                 {errors.repository_url && (
                   <span className="flex items-center gap-1.5 text-xs text-red-400 mt-0.5">
                     <AlertCircle size={12} />
@@ -250,7 +260,7 @@ export function ProjectsClient({ initialData }: ProjectsClientProps) {
                   disabled={isSubmitting}
                   className="bg-[#8CFF2E] text-[#050505] hover:bg-[#7ce027] font-medium disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px]"
                 >
-                  {isSubmitting ? 'Creating...' : 'Create Project'}
+                  {isSubmitting ? 'Creating...' : 'Create project'}
                 </Button>
               </DialogFooter>
             </div>
