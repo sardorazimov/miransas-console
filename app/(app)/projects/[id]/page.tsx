@@ -3,7 +3,7 @@
 import { useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2, Plug } from 'lucide-react'
 import { useProject } from '@/hooks/use-project'
 import { api } from '@/lib/api'
 import { useQueryClient } from '@tanstack/react-query'
@@ -18,14 +18,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog'
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu'
 import { ConfirmDialog } from '@/components/confirm-dialog'
+import { ConnectModal } from '@/components/connect-modal'
 
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
@@ -49,6 +43,7 @@ export default function ProjectOverviewPage({
   const qc = useQueryClient()
   const { data: project, isLoading } = useProject(id)
 
+  const [connectOpen, setConnectOpen] = useState(false)
   const [renameOpen, setRenameOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [renaming, setRenaming] = useState(false)
@@ -88,6 +83,27 @@ export default function ProjectOverviewPage({
   if (!project) return null
 
   return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-semibold">Overview</h2>
+          <p className="text-sm text-[var(--color-muted)]">Project details and connection</p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="primary" size="sm" onClick={() => setConnectOpen(true)}>
+            <Plug className="h-4 w-4" />
+            Connect
+          </Button>
+        </div>
+      </div>
+
+      <ConnectModal
+        open={connectOpen}
+        onOpenChange={setConnectOpen}
+        projectId={id}
+        projectName={project.name}
+      />
+
     <div className="flex gap-8">
       <div className="flex-1 space-y-4">
         <div className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] p-4 space-y-3">
@@ -203,6 +219,7 @@ export default function ProjectOverviewPage({
         danger
         onConfirm={handleDelete}
       />
+    </div>
     </div>
   )
 }

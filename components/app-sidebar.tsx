@@ -106,7 +106,7 @@ export function AppSidebar() {
         })}
       </nav>
 
-      {/* Footer / Çıkış Butonu */}
+      
       <div className="px-2 pb-3 border-t border-[var(--color-border)] pt-2 flex justify-center">
         <button
           onClick={handleLogout}

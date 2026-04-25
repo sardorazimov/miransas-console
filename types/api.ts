@@ -128,3 +128,15 @@ export type SecretWithValue = {
   notes: string | null
   project_id: string | null
 }
+
+export type ConnectionInfo = {
+  role: string
+  password: string
+  host: string
+  port: number
+  database: string
+  schema: string
+  connection_string: string
+  psql_command: string
+  env_snippet: string
+}
