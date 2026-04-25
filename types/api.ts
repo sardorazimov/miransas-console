@@ -129,6 +129,25 @@ export type SecretWithValue = {
   project_id: string | null
 }
 
+export type AuditLog = {
+  id: string
+  action: string
+  resource_type: string | null
+  resource_id: string | null
+  actor: string | null
+  ip_address: string | null
+  user_agent: string | null
+  metadata: Record<string, unknown> | null
+  created_at: string
+}
+
+export type AuditLogsResponse = {
+  rows: AuditLog[]
+  total: number
+  page: number
+  page_size: number
+}
+
 export type ConnectionInfo = {
   role: string
   password: string

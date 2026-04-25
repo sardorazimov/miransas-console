@@ -21,7 +21,7 @@ const navItems = [
   { label: 'Projects', href: '/projects', icon: FolderGit2, enabled: true },
   { label: 'Databases', href: '/databases', icon: Database, enabled: false },
   { label: 'Secrets', href: '/secrets', icon: KeyRound, enabled: true },
-  { label: 'Audit', href: '/audit', icon: FileClock, enabled: false },
+  { label: 'Audit', href: '/audit', icon: FileClock, enabled: true },
 ]
 
 export function AppSidebar() {

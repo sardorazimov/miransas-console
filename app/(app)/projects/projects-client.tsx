@@ -176,8 +176,7 @@ export function ProjectsClient({ initialData }: ProjectsClientProps) {
             <DialogHeader>
               <DialogTitle className="text-xl text-white">New project</DialogTitle>
               <DialogDescription className="text-xs text-[var(--color-muted)] mt-1">
-                A project is a PostgreSQL schema where your tables, users, and data live.
-                The schema is created automatically from the name.
+                Creates a new Postgres schema and isolated environment for your project.
               </DialogDescription>
             </DialogHeader>
           </div>
@@ -193,12 +192,12 @@ export function ProjectsClient({ initialData }: ProjectsClientProps) {
                 <Input
                   id="name"
                   {...register('name')}
-                  placeholder="binboi, auth-service, stybite..."
+                  placeholder="binboi, auth-service, my-app..."
                   autoFocus
                   className={`bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-[#8CFF2E] focus-visible:border-[#8CFF2E] transition-all ${errors.name ? 'border-red-500/50 focus-visible:ring-red-500' : ''}`}
                 />
-                <span className="text-xs text-[var(--color-muted)] font-mono">
-                  Schema name: {toSchemaName(nameValue)}
+                <span className="text-xs text-[var(--color-muted)]">
+                  Schema name: <span className="font-mono">{toSchemaName(nameValue)}</span>
                 </span>
                 {errors.name && (
                   <span className="flex items-center gap-1.5 text-xs text-red-400 mt-0.5">
